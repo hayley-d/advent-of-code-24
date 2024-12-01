@@ -21,6 +21,20 @@ fn main() {
     }
 
     println!("The total distance is {}", total);
+
+    let sim_score: usize = calculate_simularity(list1, list2);
+
+    println!("The simularity score is {}", sim_score);
+}
+
+fn calculate_simularity(list1: Vec<usize>, list2: Vec<usize>) -> usize {
+    let mut total: usize = 0;
+    for num in list1.iter() {
+        let count = list2.iter().filter(|n| *n == num).count();
+        total += (count * num);
+    }
+
+    return total;
 }
 
 fn find_difference(num1: usize, num2: usize) -> usize {
