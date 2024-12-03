@@ -1,7 +1,7 @@
 
 # Advent of Code 2024
 
-This repo contains my solutions for AOC 2024.
+This repo contains my solutions for AOC 2024 in rust.
 
 
 
