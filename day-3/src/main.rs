@@ -3,11 +3,22 @@ use std::fs;
 
 fn main() {
     let contents: String = fs::read_to_string("input.txt").unwrap();
-    let reg = Regex::new(r"mul\((\d{1,4}),(\d{1,4})\)").unwrap();
+    let reg = Regex::new(r"do\(\)|don't\(\)|(mul\((\d{1,4}),(\d{1,4})\))").unwrap();
     let matches: Vec<_> = reg.find_iter(&contents).map(|m| m.as_str()).collect();
     let mut total: usize = 0;
+    let mut flag: bool = true;
     for m in matches {
-        total += get_mul(m);
+        if m.contains("do()") {
+            flag = true;
+            continue;
+        } else if m.contains("don't()") {
+            flag = false;
+            continue;
+        }
+
+        if flag {
+            total += get_mul(m);
+        }
     }
 
     println!("The total mul is {}", total);
