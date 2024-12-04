@@ -81,4 +81,67 @@ impl Matrix {
 
         return total;
     }
+
+    pub fn diagonal_search(&self, patterns: &Vec<&str>) -> usize {
+        let mut total: usize = 0;
+
+        let max_rows: usize = self.get_rows() - 1;
+        let cols: usize = self.get_cols() - 1;
+
+        let mut chars: Vec<char> = Vec::new();
+
+        for max in 0..cols {
+            let mut i = 0;
+            let mut j = max;
+            let mut offset = 0;
+
+            if max > max_rows {
+                offset = max - max_rows;
+                j = max_rows;
+            }
+
+            while i <= max && j >= 0 {
+                if i + offset < cols && j < max_rows {
+                    chars.push(self.matrix[j][i + offset]);
+                    println!("[{}][{}]", j, i + offset);
+                } else {
+                    break;
+                }
+                i += 1;
+                j -= 1;
+            }
+        }
+
+        return total;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_diagonal() {
+        let max_rows: isize = 3;
+        let cols: isize = 5;
+
+        for max in 0..cols {
+            let mut i: isize = 0;
+            let mut j: isize = max;
+            let mut offset: isize = 0;
+
+            if max > max_rows {
+                offset = max - max_rows;
+                j = max_rows as isize;
+            }
+
+            while i <= max && j >= 0 {
+                if i + offset < cols && j < max_rows {
+                    println!("[{}][{}]", j, i + offset);
+                } else {
+                    break;
+                }
+                i += 1;
+                j -= 1;
+            }
+        }
+    }
 }

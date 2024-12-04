@@ -13,4 +13,40 @@ fn main() {
 
     let v_total = matrix.v_search(&patterns);
     println!("There are {} virticle matches", v_total);
+
+    test_diagonal();
+}
+
+fn test_diagonal() {
+    for k in 0..10 {
+        for j in 0..=k {
+            let i = k - j;
+            print!("[{}][{}]", i, j);
+        }
+        println!("\n");
+    }
+
+    for k in 0..20 {
+        for j in 0..=k {
+            let i = k - j;
+            if i < 10 && j < 10 {
+                print!("[{}][{}]", i, j);
+            }
+        }
+        println!("\n");
+    }
+}
+
+fn max(num1: isize, num2: isize) -> isize {
+    if num1 > num2 {
+        return num1;
+    }
+    return num2;
+}
+
+fn min(num1: isize, num2: isize) -> isize {
+    if num1 > num2 {
+        return num2;
+    }
+    return num1;
 }
