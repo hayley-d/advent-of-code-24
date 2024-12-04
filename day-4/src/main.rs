@@ -13,6 +13,8 @@ fn main() {
         "There are {} total overlapping matches",
         matrix.calculate_matches(patterns)
     );
+
+    matrix.xmas();
 }
 
 fn max(num1: isize, num2: isize) -> isize {

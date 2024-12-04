@@ -151,51 +151,6 @@ impl Matrix {
             total += matches;
         }
 
-        /*for k in 0..2 * dimensions {
-            let mut chars: Vec<char> = Vec::new();
-            for j in 0..=k {
-                let i = k - j;
-                if i < dimensions && j < dimensions {
-                    chars.push(self.matrix[(dimensions - i - 1) as usize][j as usize]);
-                }
-            }
-            let line: String = chars.iter().collect();
-            let ac = AhoCorasick::builder()
-                .ascii_case_insensitive(true)
-                .build(patterns)
-                .unwrap();
-
-            let matches: usize = ac
-                .find_overlapping_iter(&line)
-                .map(|mat| mat.pattern())
-                .count();
-
-            total += matches;
-        }
-
-        for k in 0..2 * dimensions {
-            let mut chars: Vec<char> = Vec::new();
-            for j in 0..=k {
-                let i = k - j;
-                if i < dimensions && j < dimensions {
-                    chars.push(
-                        self.matrix[(dimensions - i - 1) as usize][(dimensions - j - 1) as usize],
-                    );
-                }
-            }
-            let line: String = chars.iter().collect();
-            let ac = AhoCorasick::builder()
-                .ascii_case_insensitive(true)
-                .build(patterns)
-                .unwrap();
-
-            let matches: usize = ac
-                .find_overlapping_iter(&line)
-                .map(|mat| mat.pattern())
-                .count();
-
-            total += matches;
-        }*/
         return total;
     }
 
@@ -203,6 +158,39 @@ impl Matrix {
         let d: usize = self.diagonal_search(&patterns);
         println!("Diagonals: {}", d);
         return self.h_search(&patterns) + self.v_search(&patterns) + d;
+    }
+
+    pub fn xmas(&self) {
+        let mut total: usize = 0;
+        for row in 0..self.matrix.len() as isize {
+            for col in 0..self.matrix.len() as isize {
+                if self.matrix[row as usize][col as usize] == 'A' {
+                    if row - 1 >= 0
+                        && col - 1 >= 0
+                        && (row + 1 as isize) < self.matrix.len() as isize
+                        && col + 1 < self.matrix.len() as isize
+                    {
+                        let row = row as usize;
+                        let col = col as usize;
+
+                        if (self.matrix[row + 1][col - 1] == 'S'
+                            && self.matrix[row - 1][col + 1] == 'M')
+                            || (self.matrix[row + 1][col - 1] == 'M'
+                                && self.matrix[row - 1][col + 1] == 'S')
+                        {
+                            if self.matrix[row - 1][col - 1] == 'M'
+                                && self.matrix[row + 1][col + 1] == 'S'
+                                || (self.matrix[row - 1][col - 1] == 'S'
+                                    && self.matrix[row + 1][col + 1] == 'M')
+                            {
+                                total += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        println!("X-MAS: {}", total);
     }
 }
 
