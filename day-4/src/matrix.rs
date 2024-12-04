@@ -1,4 +1,4 @@
-use aho_corasick::{AhoCorasick, MatchKind, PatternID};
+use aho_corasick::AhoCorasick;
 
 pub struct Matrix {
     matrix: Vec<Vec<char>>,
@@ -13,6 +13,26 @@ impl Matrix {
                 row.push(c);
             }
             matrix.push(row);
+        }
+
+        if matrix.len() > matrix[0].len() {
+            let diff: usize = matrix.len() - matrix[0].len();
+
+            for row in &mut matrix {
+                for _ in 0..diff {
+                    row.push('\0');
+                }
+            }
+        } else {
+            let diff: usize = matrix[0].len() - matrix.len();
+
+            for _ in 0..diff {
+                let mut placeholder: Vec<char> = Vec::new();
+                for _ in 0..matrix[0].len() {
+                    placeholder.push('\0');
+                }
+                matrix.push(placeholder);
+            }
         }
 
         return Matrix { matrix };
@@ -40,7 +60,6 @@ impl Matrix {
                 .find_overlapping_iter(&line)
                 .map(|mat| mat.pattern())
                 .count();
-
             total += matches;
         }
 
@@ -84,34 +103,61 @@ impl Matrix {
 
     pub fn diagonal_search(&self, patterns: &Vec<&str>) -> usize {
         let mut total: usize = 0;
+        let dimensions: isize = self.matrix.len() as isize;
 
-        let max_rows: usize = self.get_rows() - 1;
-        let cols: usize = self.get_cols() - 1;
-
-        let mut chars: Vec<char> = Vec::new();
-
-        for max in 0..cols {
-            let mut i = 0;
-            let mut j = max;
-            let mut offset = 0;
-
-            if max > max_rows {
-                offset = max - max_rows;
-                j = max_rows;
-            }
-
-            while i <= max && j >= 0 {
-                if i + offset < cols && j < max_rows {
-                    chars.push(self.matrix[j][i + offset]);
-                    println!("[{}][{}]", j, i + offset);
-                } else {
-                    break;
+        for k in 0..2 * dimensions {
+            let mut chars: Vec<char> = Vec::new();
+            for j in 0..=k {
+                let i = k - j;
+                if i < 10 && j < 10 {
+                    chars.push(self.matrix[i as usize][j as usize]);
                 }
-                i += 1;
-                j -= 1;
             }
+
+            let line: String = chars.iter().collect();
+            let ac = AhoCorasick::builder()
+                .ascii_case_insensitive(true)
+                .build(patterns)
+                .unwrap();
+
+            let matches: usize = ac
+                .find_overlapping_iter(&line)
+                .map(|mat| mat.pattern())
+                .count();
+
+            total += matches;
         }
 
+        for k in 0..2 * dimensions {
+            let mut chars: Vec<char> = Vec::new();
+
+            for j in 0..=k {
+                let i: isize = (dimensions) - (k - j);
+                if i >= 0 && i < dimensions && j < dimensions {
+                    chars.push(self.matrix[i as usize][j as usize]);
+                }
+            }
+            let line: String = chars.iter().collect();
+            let ac = AhoCorasick::builder()
+                .ascii_case_insensitive(true)
+                .build(patterns)
+                .unwrap();
+
+            let matches: usize = ac
+                .find_overlapping_iter(&line)
+                .map(|mat| mat.pattern())
+                .count();
+
+            total += matches;
+        }
+        return total;
+    }
+
+    pub fn calculate_matches(&self, patterns: Vec<&str>) -> usize {
+        let mut total = 0;
+        total += self.h_search(&patterns);
+        total += self.v_search(&patterns);
+        total += self.diagonal_search(&patterns);
         return total;
     }
 }
