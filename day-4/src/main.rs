@@ -4,6 +4,8 @@ use std::fs;
 fn main() {
     let patterns: Vec<&str> = vec!["XMAS", "SAMX"];
 
+    let patterns2: Vec<&str> = vec!["XMAS"];
+
     let content: String = fs::read_to_string("input.txt").unwrap();
 
     let matrix: Matrix = Matrix::new(content);
