@@ -46,4 +46,39 @@ impl Matrix {
 
         return total;
     }
+
+    pub fn get_rows(&self) -> usize {
+        return self.matrix.len();
+    }
+
+    pub fn get_cols(&self) -> usize {
+        return self.matrix[0].len();
+    }
+
+    pub fn v_search(&self, patterns: &Vec<&str>) -> usize {
+        let mut total: usize = 0;
+
+        for col in 0..self.get_cols() {
+            let mut chars: Vec<char> = Vec::new();
+
+            for row in 0..self.get_rows() {
+                chars.push(self.matrix[row][col]);
+            }
+
+            let line: String = chars.iter().collect();
+            let ac = AhoCorasick::builder()
+                .ascii_case_insensitive(true)
+                .build(patterns)
+                .unwrap();
+
+            let matches: usize = ac
+                .find_overlapping_iter(&line)
+                .map(|mat| mat.pattern())
+                .count();
+
+            total += matches;
+        }
+
+        return total;
+    }
 }

@@ -10,4 +10,7 @@ fn main() {
     let matrix: Matrix = Matrix::new(content);
     let h_total = matrix.h_search(&patterns);
     println!("There are {} horazontil matches", h_total);
+
+    let v_total = matrix.v_search(&patterns);
+    println!("There are {} virticle matches", v_total);
 }
