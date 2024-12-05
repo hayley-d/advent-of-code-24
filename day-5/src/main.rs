@@ -26,10 +26,17 @@ fn main() {
 
     let mut valid_updates: Vec<Vec<usize>> =
         Vec::with_capacity(content2.lines().count() / 2 as usize);
+
+    let mut invalid_updates: Vec<Vec<usize>> =
+        Vec::with_capacity(content2.lines().count() / 2 as usize);
+
     for line in content2.lines() {
-        let list: Vec<usize> = get_list(line.to_string());
-        if dag.topological_sort(&list) {
+        let mut list: Vec<usize> = get_list(line.to_string());
+        if !dag.topological_sort(&mut list) {
             valid_updates.push(list);
+        } else {
+            let _ = dag.topological_sort(&mut list);
+            invalid_updates.push(list);
         }
     }
 
@@ -37,9 +44,21 @@ fn main() {
 
     for list in valid_updates {
         let mid: usize = list.len() / 2 as usize;
-
         total += list[mid];
     }
 
     println!("The total is {}", total);
+
+    let mut total: usize = 0;
+
+    for list in invalid_updates {
+        let mut mid: usize = list.len() / 2 as usize;
+        if list.len() % 2 != 0 {
+            mid += 1;
+        }
+
+        total += list[mid];
+    }
+
+    println!("The invalid total is {}", total);
 }

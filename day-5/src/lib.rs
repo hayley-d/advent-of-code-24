@@ -33,7 +33,8 @@ impl Dag {
         }
     }
 
-    pub fn topological_sort(&self, list: &Vec<usize>) -> bool {
+    pub fn topological_sort(&self, list: &mut Vec<usize>) -> bool {
+        let mut error: bool = false;
         for i in 0..list.len() {
             let num1: usize = list[i];
 
@@ -62,11 +63,14 @@ impl Dag {
                     .borrow()
                     .contains(&num1)
                 {
-                    return false;
+                    let temp = list[i];
+                    list[i] = list[j];
+                    list[j] = temp;
+                    error = true;
                 }
             }
         }
-        return true;
+        return error;
     }
 }
 
