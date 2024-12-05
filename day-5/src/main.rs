@@ -3,7 +3,7 @@ use std::fs;
 use day_5::{construct_adjacency_list, get_list, Dag};
 
 fn main() {
-    let contents: String = fs::read_to_string("input2.txt").unwrap();
+    let contents: String = fs::read_to_string("input.txt").unwrap();
     let mut flag: bool = false;
     let mut content1: String = String::new();
     let mut content2: String = String::new();
@@ -33,5 +33,13 @@ fn main() {
         }
     }
 
-    println!("There are {:?} valid updates", valid_updates);
+    let mut total: usize = 0;
+
+    for list in valid_updates {
+        let mid: usize = list.len() / 2 as usize;
+
+        total += list[mid];
+    }
+
+    println!("The total is {}", total);
 }
