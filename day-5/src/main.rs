@@ -35,7 +35,6 @@ fn main() {
         if !dag.topological_sort(&mut list) {
             valid_updates.push(list);
         } else {
-            let _ = dag.topological_sort(&mut list);
             invalid_updates.push(list);
         }
     }
@@ -52,11 +51,7 @@ fn main() {
     let mut total: usize = 0;
 
     for list in invalid_updates {
-        let mut mid: usize = list.len() / 2 as usize;
-        if list.len() % 2 != 0 {
-            mid += 1;
-        }
-
+        let mid: usize = list.len() / 2 as usize;
         total += list[mid];
     }
 

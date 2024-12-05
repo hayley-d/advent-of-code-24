@@ -35,7 +35,10 @@ impl Dag {
 
     pub fn topological_sort(&self, list: &mut Vec<usize>) -> bool {
         let mut error: bool = false;
-        for i in 0..list.len() {
+
+        let mut i = 0;
+        while i < list.len() {
+            let mut swap_made = false;
             let num1: usize = list[i];
 
             let mut flag: bool = true;
@@ -44,7 +47,8 @@ impl Dag {
                 None => flag = false,
             }
 
-            for j in i + 1..list.len() {
+            let mut j = i + 1;
+            while j < list.len() {
                 let num2: usize = list[j];
 
                 if flag
@@ -55,6 +59,7 @@ impl Dag {
                         .borrow()
                         .contains(&num2)
                 {
+                    j = j + 1;
                     continue;
                 } else if self
                     .adjacency_list
@@ -63,13 +68,21 @@ impl Dag {
                     .borrow()
                     .contains(&num1)
                 {
-                    let temp = list[i];
-                    list[i] = list[j];
-                    list[j] = temp;
                     error = true;
+                    swap(i, j, list);
+                    swap_made = true;
+                    break;
                 }
+
+                j += 1;
+            }
+
+            i += 1;
+            if swap_made {
+                i = 0;
             }
         }
+
         return error;
     }
 }
@@ -99,6 +112,11 @@ pub fn get_list(content: String) -> Vec<usize> {
         .collect();
 }
 
+fn swap(i: usize, j: usize, list: &mut Vec<usize>) {
+    let temp = list[i];
+    list[i] = list[j];
+    list[j] = temp;
+}
 #[cfg(test)]
 mod tests {
     use crate::{construct_adjacency_list, Dag};
