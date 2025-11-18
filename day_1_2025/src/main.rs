@@ -1,4 +1,4 @@
-use std::collections;
+use std::collections::VecDeque;
 use std::error::Error;
 use std::fs;
 
@@ -9,7 +9,34 @@ struct Line<'a> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let file_content: String = read_file();
-    let _lines = split_file_content(&file_content);
+
+    let mut distance: i32 = 0;
+
+    let lines = split_file_content(&file_content);
+
+    let mut column_1 = extract_first_column(&lines);
+    let mut column_2 = extract_second_column(&lines);
+
+    let column_1 = column_1.make_contiguous();
+    let column_2 = column_2.make_contiguous();
+
+    column_1.sort();
+    column_2.sort();
+
+    if column_1.len() != column_2.len() {
+        println!("Error columns do not contain the same amount of elements");
+        std::process::exit(1);
+    }
+
+    for index in 0..column_1.len() {
+        let number_1: i32 = column_1[index].parse().unwrap();
+        let number_2: i32 = column_2[index].parse().unwrap();
+
+        distance += (number_1 - number_2).abs();
+    }
+
+    println!("The distance is {}", distance);
+
     Ok(())
 }
 
@@ -41,9 +68,25 @@ fn split_file_content<'a>(file_content: &'a str) -> std::collections::VecDeque<L
         collection_of_lines.push_back(Line { row_1, row_2 });
     }
 
-    if let Some(first_line) = collection_of_lines.get(0) {
-        println!("The first row and first col: {}", first_line.row_1);
+    collection_of_lines
+}
+
+fn extract_first_column<'a>(lines: &'a VecDeque<Line<'a>>) -> VecDeque<&'a str> {
+    let mut column_1: VecDeque<&'a str> = VecDeque::new();
+
+    for line in lines {
+        column_1.push_back(line.row_1);
     }
 
-    collection_of_lines
+    column_1
+}
+
+fn extract_second_column<'a>(lines: &'a VecDeque<Line<'a>>) -> VecDeque<&'a str> {
+    let mut column_2: VecDeque<&'a str> = VecDeque::new();
+
+    for line in lines {
+        column_2.push_back(line.row_2);
+    }
+
+    column_2
 }
