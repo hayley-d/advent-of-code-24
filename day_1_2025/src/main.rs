@@ -10,12 +10,31 @@ struct Line<'a> {
 fn main() -> Result<(), Box<dyn Error>> {
     let file_content: String = read_file();
 
-    let mut distance: i32 = 0;
-
     let lines = split_file_content(&file_content);
 
-    let mut column_1 = extract_first_column(&lines);
-    let mut column_2 = extract_second_column(&lines);
+    let column_1 = extract_first_column(&lines);
+    let column_2 = extract_second_column(&lines);
+
+    task_1(column_1.clone(), column_2.clone());
+    task_2(column_1, column_2);
+
+    Ok(())
+}
+
+fn task_2<'a>(column_1: VecDeque<&'a str>, column_2: VecDeque<&'a str>) {
+    let mut similarity = 0;
+
+    for string_number in column_1 {
+        let number: i32 = string_number.parse().unwrap();
+        let count: i32 = column_2.iter().filter(|&s| *s == string_number).count() as i32;
+        similarity += count * number;
+    }
+
+    println!("Similarity score is {}", similarity);
+}
+
+fn task_1<'a>(mut column_1: VecDeque<&'a str>, mut column_2: VecDeque<&'a str>) {
+    let mut distance: i32 = 0;
 
     let column_1 = column_1.make_contiguous();
     let column_2 = column_2.make_contiguous();
@@ -36,8 +55,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     println!("The distance is {}", distance);
-
-    Ok(())
 }
 
 fn read_file() -> String {
